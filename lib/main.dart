@@ -29,6 +29,44 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  List _quality = ["1080P", "720P", "480P"];
+  List _client = ["正式版", "Play版", "概念版"];
+
+  List<DropdownMenuItem<String>> _qualityItems;
+  List<DropdownMenuItem<String>> _clientItems;
+
+  String _selectedQuality;
+  String _selectedClient;
+
+  @override
+  void initState() {
+    _qualityItems = buildAndGetDropDownMenuItem(_quality);
+    _selectedQuality = _qualityItems[0].value;
+    _clientItems = buildAndGetDropDownMenuItem(_client);
+    _selectedClient = _clientItems[0].value;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<String>> buildAndGetDropDownMenuItem(List items) {
+    List<DropdownMenuItem<String>> tmp = new List();
+    for (String item in items) {
+      tmp.add(new DropdownMenuItem(value: item, child: new Text(item)));
+    }
+    return tmp;
+  }
+
+  void changeQuality(String selectedQuality) {
+    setState(() {
+      _selectedQuality = selectedQuality;
+    });
+  }
+
+  void changeClient(String selectedClient) {
+    setState(() {
+      _selectedClient= selectedClient;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -38,14 +76,13 @@ class _MyHomePageState extends State<MyHomePage> {
       body: new Column(
         children: <Widget>[
           _buildLinkInput(),
-          _buildQualitySelect(),
-          _buildTypeSelect(),
+          _buildConfigSelect(),
           _buildParseBt()
         ],
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: null,
-        tooltip: 'Increment',
+        tooltip: '生成直链文本',
         child: new Icon(Icons.file_download),
       ),
     );
@@ -69,32 +106,38 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  //视频清晰度选择
-  Widget _buildQualitySelect() {
+  //视频清晰度和客户端选择
+  Widget _buildConfigSelect() {
     return new Padding(
       padding: new EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 10.0),
       child: new Row(
         children: <Widget>[
-          new Text("清晰度: "),
-          new Radio(value: 1, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
-          new Radio(value: 2, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
-          new Radio(value: 3, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
-          new Radio(value: 4, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
-        ],
-      ),
-    );
-  }
-
-  // 视频下载客户端类型
-  Widget _buildTypeSelect() {
-    return new Padding(
-      padding: new EdgeInsets.fromLTRB(30.0, 10.0, 30.0, 10.0),
-      child: new Row(
-        children: <Widget>[
-          new Text("客户端: "),
-          new Radio(value: 1, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
-          new Radio(value: 2, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
-          new Radio(value: 3, groupValue: null, onChanged: null,activeColor: Colors.pinkAccent,),
+          new Expanded(
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                new Text("清晰度: "),
+                new DropdownButton(
+                  value: _selectedQuality,
+                  items: _qualityItems,
+                  onChanged: changeQuality,
+                ),
+              ],
+            ),
+          ),
+          new Expanded(
+            child: new Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                new Text("客户端: "),
+                new DropdownButton(
+                  value: _selectedClient,
+                  items: _clientItems,
+                  onChanged: changeClient,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
