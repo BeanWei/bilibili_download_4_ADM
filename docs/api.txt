@@ -1,0 +1,7 @@
+SEC1 = '94aba54af9065f71de72f5508f1cd42e' 
+ts = 时间戳
+quality: 1080p=80，720p=64，480p=32，流畅=15.
+params = 'cid={}&player=1&quality=80&ts={}
+params = 'appkey=84956560bc028eb7&cid={}&otype=xml&qn={}&quality={}&type='.format(cid, quality, quality) #otype=json也行!!
+encrypt = hashlib.md5(bytes(params+SEC1,'utf-8')).hexdigest()
+url_api = 'https://interface.bilibili.com/v2/playurl?' + params + '&sign=' + encrypt
